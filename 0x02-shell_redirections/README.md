@@ -1,0 +1,1 @@
+This folder contains a scripts about I/O Redirection
