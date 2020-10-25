@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+# prints string 10 times with a loop
+awk '{ print $1 " " $9 }' apache-access.log
