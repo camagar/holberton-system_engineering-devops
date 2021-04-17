@@ -1,21 +1,19 @@
 #!/usr/bin/env bash
 # print subdomains
 
-show_subdomains()
-{
-	result=$(dig "$1.$2" | grep -A1 'ANSWER SECTION:'| tail -1 | tr '\t' ' ')
-	ip=$(echo "$result" | cut -d' ' -f5-)
-	register=$(echo "$result" | cut -d' ' -f4)
-	echo "$1 $register $ip" | awk '{ print "The subdomain "$1" is a "$2" record and points to " $3 }'
+function find_record() {
+   dig +nocmd "$1" +noall +answer | awk '{print $4}'
 }
-if [ "$#" == 1 ]
-then
-	show_subdomains "www" "$1"
-	show_subdomains "lb-01" "$1"
-	show_subdomains "web-01" "$1"
-	show_subdomains "web-02" "$1"
-fi
-if [ "$#" == 2 ]
-then
-	show_subdomains "$2" "$1"
+
+function find_ip() {
+   dig "$1" +short
+}
+
+if [ "$#" -eq 2 ]; then
+   echo "The subdomain $2 is a $( find_record "$1" ) record and points to $( find_ip "$2.$1" )"
+else
+   echo "The subdomain www is a $( find_record "$1" ) record and points to $( find_ip "www.$1" )"
+   echo "The subdomain lb-01 is a $( find_record "$1" ) record and points to $( find_ip "lb-01.$1" )"
+   echo "The subdomain web-01 is a $( find_record "$1" ) record and points to $( find_ip "web-01.$1" )"
+   echo "The subdomain web-02 is a $( find_record "$1" ) record and points to $( find_ip "web-02.$1" )"
 fi
