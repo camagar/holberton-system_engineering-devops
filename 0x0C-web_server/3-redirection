@@ -1,13 +1,8 @@
 #!/usr/bin/env bash
-# Install nginx server
-apt-get update
-apt-get install nginx -y
-# change content of default_server
-sudo chmod 666 /var/www/html/index.nginx-debian.html
-echo "Holberton School" > /var/www/html/index.nginx-debian.html
-sudo chmod 644 /var/www/html/index.nginx-debian.html
-# activate redirect
-command="\\\n\t# Redirection\n\trewrite ^/redirect_me/(.*)$ https://www.youtube.com/watch?v=QH2-TGUlwu4 permanent;"
-sed -i "/server_name _;/ a $command" /etc/nginx/sites-available/default
-# start the daemon
-/etc/init.d/nginx restart
+# configures new ubuntu machine with certain nginx requirements
+sudo apt-get update
+sudo apt-get -y install nginx
+sudo ufw allow 'Nginx HTTP'
+echo "Holberton School for the win!" > /var/www/html/index.html
+sudo sed -i '/listen 80 default_server/a rewrite ^/redirect_me https://www.youtube.com/watch?v=QH2-TGUlwu4 permanent;'/etc/nginx/sites-available/default
+sudo service nginx restart
