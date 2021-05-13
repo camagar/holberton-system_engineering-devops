@@ -1,23 +1,25 @@
-# Configures Nginx web server
-exec { 'Update_packages_DB':
+# Installs nginx
+# it configures a brand new Ubuntu machine to the requirements asked in this task
+
+exec {'update':
   command  => 'sudo apt-get update',
-  provider => 'shell',
-  user     => 'root',
+  provider => shell,
 }
 
-package { 'nginx':
-  ensure   => installed,
+package {'nginx':
+  ensure  => installed,
+  require => Exec['update'],
 }
 
-file_line { 'add_header':
-  ensure => present,
-  path   => '/etc/nginx/sites-available/default',
-  after  => 'server_name _;',
-  line   => 'add_header X-Served-By $hostname;'
+file_line {'response_header':
+  ensure  => present,
+  path    => '/etc/nginx/sites-available/default',
+  after   => 'listen 80 default_server;',
+  line    => "add_header X-Served-By ${hostname};",
+  require => Package['nginx'],
 }
 
 service { 'nginx':
   ensure  => running,
-  enable  => true,
-  require => Package['nginx']
+  require => File_line['response_header'],
 }
