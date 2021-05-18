@@ -9,7 +9,7 @@ base_url = 'http://reddit.com/r/{}/hot.json'
 
 def count_words(subreddit, word_list, hot_list=[], after=""):
     """all posts recursively"""
-    headers = {'User-agent': 'camagar'}
+    headers = {'User-agent': 'karenahv'}
     params = {'t': all, 'after': after}
     req = requests.get(base_url.format(subreddit), headers=headers,
                        params=params)
